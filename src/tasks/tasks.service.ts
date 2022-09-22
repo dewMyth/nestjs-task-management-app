@@ -11,6 +11,21 @@ export class TasksService {
     return this.tasks;
   }
 
+  getTasksWithFilters(filterDTO: any): Task[] {
+    const { status, search } = filterDTO;
+    let tasks = this.getAllTasks();
+    if (status) {
+      tasks = tasks.filter((task) => task.status === status);
+    }
+    if (search) {
+      tasks = tasks.filter(
+        (task) =>
+          task.title.includes(search) || task.description.includes(search),
+      );
+    }
+    return tasks;
+  }
+
   getSingleTask(id: string): Task {
     const taskFound = this.tasks.find((task) => task.id === id);
     if (!taskFound) {
