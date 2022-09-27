@@ -1,10 +1,75 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Get, Injectable, NotFoundException, Post } from '@nestjs/common';
 import { TaskStatus } from './task-status.enum';
 // import { v1 as uuid } from 'uuid';
 import { CreateTaskDTO } from './dto/create-task.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Task } from './entities/task.entity';
+import { Repository } from 'typeorm';
+import { GetTasksFilterDTO } from './dto/get-tasks-filter.dto';
 
 @Injectable()
 export class TasksService {
+  constructor(
+    @InjectRepository(Task) private taskRepository: Repository<Task>,
+  ) {}
+
+  // Get Task By ID
+  async getTaskById(id: number): Promise<Task> {
+    const found = await this.taskRepository.findOne({
+      where: { id: id },
+    });
+    if (!found) {
+      throw new NotFoundException(`Task with ID "${id}" not found`);
+    }
+    return found;
+  }
+
+  async getTasksWithFilters(filterDTO: GetTasksFilterDTO): Promise<Task[]> {
+    const { status, search } = filterDTO;
+    const query = this.taskRepository.createQueryBuilder('task');
+    if (status) {
+      query.andWhere('task.status = :status', { status: status });
+    }
+    if (search) {
+      query.andWhere(
+        '(task.title LIKE :search OR task.description LIKE :search)',
+        { search: `%${search}%` },
+      );
+    }
+    return await query.getMany();
+  }
+
+  // Get All Tasks
+  // async getAllTasks(): Promise<Task[]> {
+  //   return await this.taskRepository.find();
+  // }
+
+  //Create Task
+  async createTask(createTaskDTO: CreateTaskDTO): Promise<Task> {
+    const { title, description } = createTaskDTO;
+    const task = new Task();
+    task.title = title;
+    task.description = description;
+    task.status = TaskStatus.OPEN;
+    await task.save();
+    return task;
+  }
+
+  //Delete a task
+  async deleteTask(id: number): Promise<string> {
+    const task = await this.getTaskById(id);
+    this.taskRepository.delete(task.id);
+    return `Task with ID "${id}" has been deleted`;
+  }
+
+  //Update a task
+  async updateTaskStatus(id: number, status: TaskStatus): Promise<Task> {
+    const task = await this.getTaskById(id);
+    task.status = status;
+    await task.save();
+    return task;
+  }
+
   // private tasks: Task[] = [];
   // getAllTasks(): Task[] {
   //   return this.tasks;
