@@ -1,4 +1,12 @@
-import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Req,
+  UseGuards,
+  ValidationPipe,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDTO } from './dto/auth-credentials.dto';
 
@@ -16,9 +24,16 @@ export class AuthController {
 
   //Validate User
   @Post('/signin')
-  async signIn(
+  signIn(
     @Body(ValidationPipe) authCredentialsDTO: AuthCredentialsDTO,
   ): Promise<{ accessToken: string }> {
     return this.authService.signIn(authCredentialsDTO);
+  }
+
+  //Test route to check if the user is authenticated
+  @Post('/test')
+  @UseGuards(AuthGuard()) //AuthGuard is a built-in guard that checks if the user is authenticated
+  test(@Req() req) {
+    console.log(req);
   }
 }
