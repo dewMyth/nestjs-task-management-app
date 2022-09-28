@@ -29,7 +29,7 @@ export class AuthService {
     console.log(user.password);
 
     try {
-      await user.save();
+      await this.userRepository.save(user);
     } catch (err) {
       if (err.code === '23505') {
         throw new ConflictException('Username already exists');
