@@ -10,11 +10,15 @@ import { AuthCredentialsDTO } from './dto/auth-credentials.dto';
 import { User } from './user.entity';
 
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+import { JwtPayload } from './jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+    private jwtService: JwtService,
   ) {}
 
   // User Signup
@@ -40,9 +44,27 @@ export class AuthService {
     }
   }
 
-  //Validate/Login User
-  async signIn(authCredentialsDTO: AuthCredentialsDTO): Promise<string> {
+  // User Login
+  async signIn(
+    authCredentialsDTO: AuthCredentialsDTO,
+  ): Promise<{ accessToken: string }> {
+    //username from the validateUser function if it is valid (return the username if true, not boolean true)
+    const username = await this.validateUser(authCredentialsDTO);
+
+    if (!username) {
+      throw new UnauthorizedException('Invalid Credentials');
+    }
+
+    const payload: JwtPayload = { username };
+    const accessToken = await this.jwtService.sign(payload);
+
+    return { accessToken };
+  }
+
+  //Validate User
+  async validateUser(authCredentialsDTO: AuthCredentialsDTO): Promise<string> {
     const { username, password } = authCredentialsDTO;
+
     const user = await this.userRepository.findOne({
       where: { username },
     });
@@ -50,7 +72,7 @@ export class AuthService {
     if (user && (await user.validatePassword(password))) {
       return await user.username;
     } else {
-      throw new UnauthorizedException('Invalid Credentials');
+      return null;
     }
   }
 

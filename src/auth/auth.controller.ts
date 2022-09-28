@@ -16,7 +16,9 @@ export class AuthController {
 
   //Validate User
   @Post('/signin')
-  async signIn(@Body(ValidationPipe) authCredentialsDTO: AuthCredentialsDTO) {
-    const user = await this.authService.signIn(authCredentialsDTO);
+  async signIn(
+    @Body(ValidationPipe) authCredentialsDTO: AuthCredentialsDTO,
+  ): Promise<{ accessToken: string }> {
+    return this.authService.signIn(authCredentialsDTO);
   }
 }
