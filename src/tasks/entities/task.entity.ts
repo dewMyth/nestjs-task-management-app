@@ -25,4 +25,7 @@ export class Task extends BaseEntity {
 
   @ManyToOne(() => User, (user) => user.tasks, { eager: false })
   user: User;
+
+  @Column() //Event Automatically generated, no need to add specifically like this
+  userId: number;
 }

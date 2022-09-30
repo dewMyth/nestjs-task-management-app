@@ -36,8 +36,9 @@ export class TaskController {
   @Get()
   getTasks(
     @Query(ValidationPipe) filterDTO: GetTasksFilterDTO,
+    @GetUser() user: User,
   ): Promise<Task[]> {
-    return this.tasksService.getTasksWithFilters(filterDTO);
+    return this.tasksService.getTasksWithFilters(filterDTO, user);
   }
 
   //Create a task
