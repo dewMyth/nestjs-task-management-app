@@ -88,8 +88,6 @@ export class TasksService {
     return task;
   }
 
-  // NON DB TASKS
-
   // private tasks: Task[] = [];
   // getAllTasks(): Task[] {
   //   return this.tasks;
