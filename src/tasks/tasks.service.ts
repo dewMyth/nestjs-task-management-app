@@ -136,6 +136,4 @@ export class TasksService {
   //   task.status = status;
   //   return task;
   // }
-
-  //NO DB PERSISTENCE METHODS ENDS HERE
 }
