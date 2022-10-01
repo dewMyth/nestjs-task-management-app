@@ -2,15 +2,16 @@ import {
   Body,
   Controller,
   Post,
-  Req,
-  UseGuards,
+  // Req,
+  // UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+// import { AuthGuard } from '@nestjs/passport';
+// import { GetUser } from './get-user.decorator';
+
+// import { User } from './user.entity';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDTO } from './dto/auth-credentials.dto';
-import { GetUser } from './get-user.decorator';
-import { User } from './user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -33,9 +34,9 @@ export class AuthController {
   }
 
   //Test route to check if the user is authenticated
-  @Post('/test')
-  @UseGuards(AuthGuard()) //AuthGuard is a built-in guard that checks if the user is authenticated
-  test(@GetUser() user: User) {
-    console.log(user);
-  }
+  // @Post('/test')
+  // @UseGuards(AuthGuard()) //AuthGuard is a built-in guard that checks if the user is authenticated
+  // test(@GetUser() user: User) {
+  //   console.log(user);
+  // }
 }

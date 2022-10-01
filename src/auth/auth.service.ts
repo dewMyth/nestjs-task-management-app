@@ -31,8 +31,6 @@ export class AuthService {
     user.salt = await bcrypt.genSalt();
     user.password = await this.hashPassword(password, user.salt);
 
-    console.log(user.password);
-
     try {
       await this.userRepository.save(user);
     } catch (err) {
