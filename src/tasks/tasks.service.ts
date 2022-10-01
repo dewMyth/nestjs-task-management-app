@@ -88,6 +88,8 @@ export class TasksService {
     return task;
   }
 
+  //NO DB PERSISTENCE METHODS STARTS HERE
+
   // private tasks: Task[] = [];
   // getAllTasks(): Task[] {
   //   return this.tasks;
@@ -134,4 +136,6 @@ export class TasksService {
   //   task.status = status;
   //   return task;
   // }
+
+  //NO DB PERSISTENCE METHODS ENDS HERE
 }
