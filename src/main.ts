@@ -9,7 +9,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   //Enable CORS to allow requests from other domains
-  if (process.env.NODE_ENV !== 'development') {
+  // app.enableCors();
+  if (process.env.NODE_ENV == 'development') {
     app.enableCors();
   }
 
