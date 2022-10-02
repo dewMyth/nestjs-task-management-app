@@ -20,6 +20,7 @@ const dbConfig = config.get('db');
       password: process.env.RDS_PASSWORD || dbConfig.password,
       database: process.env.RDS_DATABASE || dbConfig.database,
       // entities: [],
+      entities: [__dirname + '/../**/*.entity.{js,ts}'],
       autoLoadEntities: true,
       synchronize: process.env.TYPEORM_SYNC || dbConfig.synchronize,
     }),
